@@ -4,164 +4,431 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: $bg-primary;
+  background: $bg-primary;
   overflow: hidden;
+
+  .loading-state {
+    @include flex-center;
+    height: 100vh;
+    color: $text-secondary;
+    font-size: 1.5rem;
+  }
 
   .dashboard-header {
     height: 60px;
-    background-color: $bg-surface;
-    border-bottom: 1px solid $border;
+    background: linear-gradient(90deg, $bg-surface 0%, #172133 100%);
+    border-bottom: 2px solid $accent-gold;
     @include flex-between;
     padding: 0 2rem;
-    
-    h1 {
-      font-size: 1.5rem;
-      color: $text-primary;
+    flex-shrink: 0;
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      .cricket-icon { font-size: 1.6rem; }
+
+      h1 {
+        font-size: 1.5rem;
+        color: $accent-gold;
+        letter-spacing: 2px;
+      }
+    }
+
+    .auction-stats {
+      display: flex;
+      gap: 2rem;
+      .stat {
+        color: $text-secondary;
+        font-size: 0.95rem;
+        strong { color: #fff; margin-left: 0.25rem; }
+      }
     }
   }
 
   .dashboard-grid {
     flex: 1;
     display: grid;
-    grid-template-columns: 300px 1fr 300px;
-    gap: 1px;
-    background: $border; /* Acts as border between panels */
-    
+    grid-template-columns: 320px 1fr 300px;
+    overflow: hidden;
+
     .panel {
+      overflow-y: auto;
       background: $bg-primary;
+    }
+  }
+}
+
+/* LEFT: Pool Panel */
+.pool-panel {
+  border-right: 1px solid $border;
+
+  h2 {
+    padding: 1rem;
+    font-size: 1.1rem;
+    background: $bg-surface;
+    border-bottom: 1px solid $border;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+
+  .filters {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.75rem;
+    flex-wrap: wrap;
+    background: $bg-surface;
+    border-bottom: 1px solid $border;
+    position: sticky;
+    top: 48px;
+    z-index: 2;
+
+    .filter-btn {
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(255,255,255,0.05);
+      color: $text-secondary;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+
+      &.active {
+        background: rgba(244, 169, 0, 0.15);
+        color: $accent-gold;
+        border-color: $accent-gold;
+      }
+    }
+  }
+
+  .player-list {
+    .player-item {
       display: flex;
-      flex-direction: column;
-      
-      h2 {
-        padding: 1rem;
-        background: $bg-surface;
-        font-size: 1.1rem;
-        border-bottom: 1px solid $border;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      cursor: pointer;
+      transition: all 0.15s;
+
+      &:hover { background: rgba(255,255,255,0.04); }
+      &.on-block {
+        background: rgba(244, 169, 0, 0.1);
+        border-left: 4px solid $accent-gold;
       }
-    }
-    
-    .pool-panel {
-      .filters {
-        padding: 1rem;
-        display: flex;
-        gap: 0.5rem;
-        
-        select { flex: 1; width: 100%; border-color: rgba(255,255,255,0.1); }
-      }
-      
-      .player-list {
+
+      .player-info {
         flex: 1;
-        overflow-y: auto;
-        
-        .list-item {
-          @include flex-between;
-          padding: 1rem;
-          border-bottom: 1px solid rgba(255,255,255,0.05);
-          cursor: pointer;
-          transition: background 0.2s;
-          
-          &:hover { background: rgba(255,255,255,0.05); }
-          &.active { background: rgba(244, 169, 0, 0.1); border-left: 4px solid $accent-gold; }
-          
-          .price { color: $accent-gold; font-weight: 600; }
+        .player-name { display: block; font-weight: 600; font-size: 0.95rem; }
+        .player-meta { font-size: 0.75rem; color: $text-secondary; }
+      }
+
+      .player-stats-mini {
+        display: flex;
+        gap: 0.25rem;
+        .stat-badge {
+          font-size: 0.7rem;
+          padding: 0.15rem 0.35rem;
+          border-radius: 4px;
+          background: rgba(255,255,255,0.06);
+        }
+      }
+
+      .base-price {
+        font-weight: 700;
+        color: $accent-gold;
+        font-size: 0.85rem;
+        white-space: nowrap;
+      }
+    }
+  }
+}
+
+/* CENTER: Live Panel */
+.live-panel {
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(ellipse at top center, #172133 0%, $bg-primary 70%) !important;
+
+  .empty-stage {
+    flex: 1;
+    @include flex-center;
+    flex-direction: column;
+    color: $text-secondary;
+    gap: 1rem;
+    .cricket-ball { font-size: 5rem; animation: bounce 2s infinite; }
+    h2 { font-family: $font-heading; font-size: 2rem; color: $text-primary; }
+    .auction-complete {
+      text-align: center;
+      h2 { color: $accent-gold; }
+    }
+  }
+
+  .auction-stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+    gap: 1rem;
+    overflow-y: auto;
+
+    .timer-section {
+      .timer-ring {
+        width: 80px;
+        height: 80px;
+        transform: rotate(-90deg);
+
+        .ring-bg {
+          fill: none;
+          stroke: rgba(255,255,255,0.08);
+          stroke-width: 5;
+        }
+        .ring-fill {
+          fill: none;
+          stroke-width: 5;
+          stroke-linecap: round;
+          transition: stroke-dashoffset 1s linear, stroke 0.3s;
+        }
+        .timer-text {
+          font-size: 22px;
+          font-family: $font-heading;
+          transform: rotate(90deg);
+          transform-origin: 50% 50%;
         }
       }
     }
-    
-    .live-panel {
-      background: radial-gradient(circle at center, #111827 0%, $bg-primary 100%);
-      padding: 2rem;
-      
-      .center-stage {
-        height: 100%;
-        display: flex;
-        gap: 2rem;
-        align-items: flex-start;
-        justify-content: center;
-        
-        .waiting-state {
-          margin: auto;
-          color: $text-secondary;
-          font-style: italic;
-          font-size: 1.2rem;
+
+    .player-showcase {
+      text-align: center;
+
+      .player-avatar {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 0.75rem;
+        border-radius: 50%;
+        background: linear-gradient(135deg, $accent-gold 0%, #d48c00 100%);
+        @include flex-center;
+        color: #000;
+        font-size: 2rem;
+        font-weight: 700;
+        font-family: $font-heading;
+      }
+
+      .player-name { font-size: 2rem; margin-bottom: 0.5rem; }
+
+      .player-tags {
+        display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem;
+        .tag {
+          padding: 0.2rem 0.6rem;
+          border-radius: 100px;
+          font-size: 0.7rem;
+          font-weight: 700;
+          letter-spacing: 1px;
+          &.role { background: rgba(244, 169, 0, 0.15); color: $accent-gold; }
+          &.country { background: rgba(255,255,255,0.08); color: $text-secondary; }
+          &.overseas { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
+          &.uncapped { background: rgba(244, 114, 182, 0.15); color: #f472b6; }
         }
-        
-        .live-activity {
-          flex: 1;
-          max-width: 400px;
-          
-          h3 { margin-bottom: 1rem; color: $text-secondary; font-size: 1rem; }
-          
-          .bid-stream {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            
-            .bid-card {
-              background: rgba(255,255,255,0.05);
-              border: 1px solid rgba(255,255,255,0.1);
-              padding: 1rem;
-              border-radius: 8px;
-              
-              .info {
-                @include flex-between;
-                margin-bottom: 1rem;
-                font-size: 1.1rem;
-                
-                span { color: $accent-gold; font-weight: 700; font-size: 1.5rem; }
-              }
-              
-              .actions {
-                display: flex;
-                gap: 0.5rem;
-                
-                button {
-                  flex: 1;
-                  padding: 0.75rem;
-                  border-radius: 4px;
-                  font-weight: 600;
-                  
-                  &.btn-accept { background: $accent-green; color: #fff; }
-                  &.btn-reject { background: transparent; border: 1px solid $border; color: $text-secondary; }
-                }
-              }
+      }
+
+      .strength-bars {
+        width: 300px;
+        .bar-row {
+          display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.85rem;
+          span:first-child { width: 55px; text-align: right; color: $text-secondary; }
+          span:last-child { width: 40px; font-weight: 600; }
+          .bar-track {
+            flex: 1; height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden;
+            .bar-fill {
+              height: 100%; border-radius: 4px; transition: width 0.5s;
+              &.bat { background: $accent-gold; }
+              &.bowl { background: $accent-green; }
             }
           }
         }
       }
     }
-    
-    .teams-panel {
-      padding: 1rem;
-      gap: 1rem;
-      
-      .team-stats-card {
-        background: rgba(255,255,255,0.03);
-        padding: 1rem;
+
+    .bid-display {
+      text-align: center;
+      background: rgba(255,255,255,0.04);
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      .label { display: block; font-size: 0.8rem; color: $text-secondary; text-transform: uppercase; letter-spacing: 2px; }
+      .amount { display: block; font-size: 2.5rem; font-family: $font-heading; color: #fff; }
+      .leading-team { display: block; font-size: 0.9rem; color: $accent-green; margin-top: 0.25rem; }
+    }
+
+    .bid-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      width: 100%;
+      max-width: 500px;
+
+      .team-bid-btn {
+        padding: 0.85rem 0.5rem;
         border-radius: 8px;
-        border: 1px solid rgba(255,255,255,0.05);
-        
-        h4 { margin-bottom: 0.5rem; font-family: $font-body; font-size: 1rem; }
-        
-        .progress-bar {
-          height: 6px;
-          background: rgba(255,255,255,0.1);
-          border-radius: 3px;
-          margin-bottom: 0.5rem;
-          
-          .fill {
-            height: 100%;
-            background: $accent-gold;
-            border-radius: 3px;
-          }
-        }
-        
-        .stats {
-          @include flex-between;
-          font-size: 0.8rem;
-          color: $text-secondary;
-        }
+        font-weight: 700;
+        font-size: 0.95rem;
+        background: rgba(255,255,255,0.05);
+        border: 2px solid;
+        transition: all 0.15s;
+
+        &:hover:not(:disabled) { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        &:disabled { opacity: 0.3; cursor: default; }
       }
     }
+
+    .announcement-banner {
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      background: rgba(244, 169, 0, 0.12);
+      border: 1px solid $accent-gold;
+      color: $accent-gold;
+      font-weight: 700;
+      font-size: 1.1rem;
+      animation: pulseAnnounce 1.5s infinite;
+    }
+
+    .auctioneer-controls {
+      display: flex;
+      gap: 0.75rem;
+      width: 100%;
+      max-width: 500px;
+
+      .btn-ask-more {
+        flex: 1;
+        padding: 0.85rem;
+        border-radius: 8px;
+        background: rgba(244, 169, 0, 0.1);
+        border: 1px solid $accent-gold;
+        color: $accent-gold;
+        font-weight: 700;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        &:hover { background: rgba(244, 169, 0, 0.2); transform: translateY(-2px); }
+      }
+
+      .btn-accept {
+        flex: 1;
+        padding: 0.85rem;
+        border-radius: 8px;
+        background: $accent-green;
+        color: #fff;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: all 0.2s;
+        &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4); }
+        &:disabled { opacity: 0.35; }
+      }
+
+      .btn-unsold {
+        flex: 1;
+        padding: 0.85rem;
+        border-radius: 8px;
+        background: transparent;
+        border: 1px solid $border;
+        color: $text-secondary;
+        font-weight: 600;
+        transition: all 0.2s;
+        &:hover { background: rgba(239, 68, 68, 0.1); border-color: $accent-red; color: $accent-red; }
+      }
+    }
+  }
+
+  .activity-log {
+    border-top: 1px solid $border;
+    padding: 0.75rem 1rem;
+    max-height: 180px;
+    overflow-y: auto;
+
+    h3 { font-size: 0.85rem; color: $text-secondary; margin-bottom: 0.5rem; }
+    .no-log { color: $text-secondary; font-style: italic; font-size: 0.85rem; }
+
+    .log-entry {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.3rem 0;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      .log-time { color: $text-secondary; white-space: nowrap; font-size: 0.75rem; }
+    }
+  }
+}
+
+/* RIGHT: Teams Panel */
+.teams-panel {
+  border-left: 1px solid $border;
+  padding: 0;
+
+  h2 {
+    padding: 1rem;
+    font-size: 1.1rem;
+    background: $bg-surface;
+    border-bottom: 1px solid $border;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+
+  .team-card {
+    margin: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    background: $bg-surface;
+    border-left: 4px solid;
+
+    .team-header {
+      @include flex-between;
+      margin-bottom: 0.5rem;
+      h3 { font-size: 1rem; font-family: $font-body; }
+      .purse { font-weight: 700; font-size: 0.95rem; }
+    }
+
+    .team-stats-row {
+      display: flex; gap: 1rem; font-size: 0.8rem; color: $text-secondary; margin-bottom: 0.5rem;
+    }
+
+    .squad-list {
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 0.5rem;
+      max-height: 100px;
+      overflow-y: auto;
+
+      .squad-player {
+        @include flex-between;
+        padding: 0.2rem 0;
+        font-size: 0.8rem;
+        .sold-price { color: $accent-gold; font-weight: 600; }
+      }
+    }
+  }
+}
+
+/* Animations */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes pulseAnnounce {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .pool-panel, .teams-panel {
+    display: none;
   }
 }

@@ -1,0 +1,48 @@
+@import '../../styles/variables';
+
+.join-room-page {
+  @include flex-center;
+  min-height: 100vh;
+  background: radial-gradient(circle at center, #1a2235 0%, $bg-primary 100%);
+
+  .join-card {
+    background: $bg-surface;
+    border: 1px solid $border;
+    border-radius: 12px;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 550px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+
+    h2 { text-align: center; font-size: 2.5rem; color: $accent-gold; margin-bottom: 1.5rem; }
+
+    .error-banner { background: rgba(239,68,68,0.1); border: 1px solid $accent-red; color: #fca5a5; padding: 0.75rem; border-radius: 4px; margin-bottom: 1rem; text-align: center; }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      label { display: block; margin-bottom: 0.5rem; color: $text-secondary; font-size: 0.9rem; }
+      input[type="text"] { width: 100%; background: rgba(0,0,0,0.2); font-size: 1.1rem; letter-spacing: 2px; text-align: center;
+        &:focus { border-color: $accent-gold; box-shadow: 0 0 0 2px rgba(244,169,0,0.2); }
+      }
+    }
+
+    .team-picker {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+
+      .pick-card {
+        display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: 8px;
+        background: rgba(255,255,255,0.03); border: 2px solid $border; cursor: pointer; transition: all 0.15s;
+
+        &:hover { background: rgba(255,255,255,0.06); }
+        &.picked { background: rgba(244,169,0,0.08); box-shadow: 0 0 10px rgba(244,169,0,0.15); }
+
+        .pick-badge { width: 36px; height: 36px; border-radius: 6px; @include flex-center; color: #fff; font-weight: 800; font-size: 0.8rem; flex-shrink: 0; }
+        span { font-weight: 600; font-size: 0.85rem; }
+      }
+    }
+
+    .join-submit { width: 100%; margin-top: 1rem; font-size: 1.1rem; padding: 1rem; }
+  }
+}

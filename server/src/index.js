@@ -7,6 +7,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const roomRoutes = require('./routes/rooms');
 const playerRoutes = require('./routes/players');
+const auctionRoutes = require('./routes/auction');
 const setupSocketHandlers = require('./socket/index');
 
 const app = express();
@@ -30,6 +31,7 @@ app.set('io', io); // make io available in express routes if needed
 app.use('/api/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/players', playerRoutes);
+app.use('/api/auction', auctionRoutes);
 
 // Health check
 app.get('/health', (req, res) => res.json({ status: 'ok', time: new Date() }));

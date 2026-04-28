@@ -1,16 +1,49 @@
-const Redis = require('ioredis');
+const redisFallback = new Map();
 
-// Fallback to local redis if REDIS_URL absent
-const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
-const redis = new Redis(redisUrl);
-
-redis.on('connect', () => {
-  console.log('Connected to Redis');
-});
-
-redis.on('error', (err) => {
-  console.error('Redis connection error:', err);
-});
+const redis = {
+  get: async (key) => redisFallback.get(key) || null,
+  set: async (key, val, ex, time) => {
+    redisFallback.set(key, val);
+    if (ex === 'EX') {
+      setTimeout(() => redisFallback.delete(key), time * 1000);
+    }
+  },
+  del: async (...keys) => {
+    keys.forEach(key => redisFallback.delete(key));
+  },
+  keys: async (pattern) => {
+    const regex = new RegExp('^' + pattern.replace(/\*/g, '.*') + '$');
+    return Array.from(redisFallback.keys()).filter(key => regex.test(key));
+  },
+  sadd: async (key, ...members) => {
+    if (!redisFallback.has(key)) redisFallback.set(key, new Set());
+    const s = redisFallback.get(key);
+    members.forEach(m => s.add(m));
+  },
+  srem: async (key, ...members) => {
+    const s = redisFallback.get(key);
+    if (s) members.forEach(m => s.delete(m));
+  },
+  smembers: async (key) => {
+    const s = redisFallback.get(key);
+    return s ? Array.from(s) : [];
+  },
+  lpush: async (key, ...vals) => {
+    if (!redisFallback.has(key)) redisFallback.set(key, []);
+    const list = redisFallback.get(key);
+    list.unshift(...vals);
+  },
+  ltrim: async (key, start, end) => {
+    const list = redisFallback.get(key) || [];
+    const realEnd = end === -1 ? list.length : end + 1;
+    redisFallback.set(key, list.slice(start, realEnd));
+  },
+  lrange: async (key, start, end) => {
+    const list = redisFallback.get(key) || [];
+    const realEnd = end === -1 ? list.length : end + 1;
+    return list.slice(start, realEnd);
+  }
+};
 
 // Helper functions that stringify/parse JSON automatically
 async function getJson(key) {

@@ -1,188 +1,166 @@
 @import '../../styles/variables';
 
 .team-manager-layout {
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  background-color: $bg-primary;
+  background: $bg-primary;
+  color: $text-primary;
+  overflow: hidden;
+
+  .loading { @include flex-center; height: 100vh; color: $text-secondary; font-size: 1.5rem; }
 
   .team-header {
     height: 60px;
-    background-color: $bg-surface;
-    border-bottom: 1px solid $border;
+    background: $bg-surface;
+    border-bottom: 2px solid $accent-gold;
     @include flex-between;
-    padding: 0 2rem;
-    
-    .brand {
-      font-family: $font-heading;
-      font-size: 1.5rem;
-      color: #fff;
-    }
-    
-    .purse-tracker {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: $text-secondary;
-      
-      .amt {
-        color: $accent-gold;
-        margin-left: 0.5rem;
+    padding: 0 1.5rem;
+    flex-shrink: 0;
+
+    .brand-section {
+      display: flex; align-items: center; gap: 0.75rem;
+      .team-badge {
+        width: 36px; height: 36px; border-radius: 6px; @include flex-center;
+        color: #fff; font-weight: 800; font-size: 0.85rem;
       }
+      h1 { font-size: 1.3rem; color: #fff; }
     }
+    .purse-display { font-size: 1.1rem; color: $text-secondary; strong { margin-left: 0.3rem; font-size: 1.3rem; } }
   }
 
-  .warnings-container {
-    position: absolute;
-    top: 60px;
-    left: 0;
-    right: 0;
-    z-index: 10;
-    
-    .warning-banner {
-      background-color: rgba(245, 158, 11, 0.9);
-      color: #000;
+  .main-layout {
+    flex: 1; display: grid; grid-template-columns: 260px 1fr 260px; overflow: hidden;
+  }
+}
+
+/* Squad Panel */
+.squad-panel {
+  border-right: 1px solid $border; overflow-y: auto;
+  h2 { padding: 1rem; font-size: 1rem; background: $bg-surface; border-bottom: 1px solid $border; position: sticky; top: 0; z-index: 2; }
+  .empty-squad { padding: 2rem 1rem; color: $text-secondary; font-style: italic; text-align: center; }
+  .squad-items {
+    .squad-item {
+      @include flex-between; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.04);
+      .sq-name { display: block; font-weight: 600; font-size: 0.9rem; }
+      .sq-role { font-size: 0.75rem; color: $text-secondary; }
+      .sq-price { color: $accent-gold; font-weight: 700; font-size: 0.85rem; }
+    }
+  }
+  .squad-summary { padding: 0.75rem 1rem; font-size: 0.8rem; color: $text-secondary; border-top: 1px solid $border; }
+}
+
+/* Center: Active Auction */
+.auction-center {
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at center, #172133 0%, $bg-primary 70%);
+  overflow-y: auto; padding: 1rem;
+
+  .waiting-area {
+    text-align: center; color: $text-secondary;
+    .cricket-anim { font-size: 5rem; animation: bounce 2s infinite; }
+    h2 { font-family: $font-heading; font-size: 2rem; color: $text-primary; margin-bottom: 0.5rem; }
+  }
+
+  .live-bid-area {
+    display: flex; flex-direction: column; align-items: center; gap: 1rem; width: 100%; max-width: 450px;
+
+    .timer-section {
+      .timer-ring {
+        width: 70px; height: 70px; transform: rotate(-90deg);
+        .ring-bg { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 5; }
+        .ring-fill { fill: none; stroke-width: 5; stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke 0.3s; }
+        .timer-text { font-size: 22px; font-family: $font-heading; transform: rotate(90deg); transform-origin: 50% 50%; }
+      }
+    }
+
+    .player-showcase {
       text-align: center;
-      padding: 0.5rem;
-      font-weight: 600;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-      animation: slideDown 0.3s ease-out forwards;
+      .player-avatar {
+        width: 70px; height: 70px; margin: 0 auto 0.5rem; border-radius: 50%;
+        background: linear-gradient(135deg, $accent-gold, #d48c00); @include flex-center;
+        color: #000; font-size: 1.8rem; font-weight: 700; font-family: $font-heading;
+      }
+      h2 { font-size: 1.8rem; margin-bottom: 0.4rem; }
+      .player-tags {
+        display: flex; gap: 0.4rem; justify-content: center; flex-wrap: wrap; margin-bottom: 0.75rem;
+        .tag { padding: 0.15rem 0.5rem; border-radius: 100px; font-size: 0.7rem; font-weight: 700; background: rgba(255,255,255,0.08); color: $text-secondary;
+          &.overseas { background: rgba(96,165,250,0.15); color: #60a5fa; }
+        }
+      }
+      .strength-bars {
+        width: 280px; margin: 0 auto;
+        .bar-row {
+          display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.35rem; font-size: 0.8rem;
+          span:first-child { width: 40px; text-align: right; color: $text-secondary; }
+          span:last-child { width: 25px; font-weight: 600; }
+          .bar-track { flex: 1; height: 7px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden;
+            .bar-fill { height: 100%; border-radius: 4px; &.bat { background: $accent-gold; } &.bowl { background: $accent-green; } }
+          }
+        }
+      }
     }
-  }
 
-  .main-content {
-    flex: 1;
-    display: flex;
-    overflow: hidden;
-    
-    .sidebar {
-      width: 300px;
-      background-color: $bg-elevated;
-      padding: 1.5rem;
-      border-right: 1px solid $border;
-      
-      &.right {
-        border-right: none;
-        border-left: 1px solid $border;
-      }
-      
-      h3 {
-        color: $text-secondary;
-        font-size: 1rem;
-        margin-bottom: 1rem;
-        text-transform: uppercase;
+    .bid-info {
+      text-align: center; background: rgba(255,255,255,0.04); padding: 0.75rem 2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
+      .bid-label { display: block; font-size: 0.75rem; color: $text-secondary; text-transform: uppercase; letter-spacing: 2px; }
+      .bid-amount { display: block; font-size: 2.2rem; font-family: $font-heading; color: #fff; }
+      .leading { display: block; font-size: 0.85rem; color: $text-secondary; margin-top: 0.2rem;
+        &.you { color: $accent-green; font-weight: 700; }
       }
     }
-    
-    .center-stage {
-      flex: 1;
-      @include flex-center;
-      flex-direction: column;
-      padding: 2rem;
-      position: relative;
-      background: radial-gradient(circle at center, #111827 0%, $bg-primary 100%);
-      
-      .bidding-controls {
-        margin-top: 2rem;
-        width: 100%;
-        max-width: 500px;
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 12px;
-        padding: 1.5rem;
-        text-align: center;
-        
-        .timer-wrapper {
-          margin-bottom: 1rem;
-          
-          .timer-ring {
-            transform: rotate(-90deg);
-            
-            .ring-bg {
-              fill: none;
-              stroke: rgba(255,255,255,0.1);
-              stroke-width: 4;
-            }
-            
-            .ring-prog {
-              fill: none;
-              stroke-width: 4;
-              stroke-linecap: round;
-              transition: stroke-dashoffset 1s linear, stroke 0.3s ease;
-              
-              &.pulse {
-                animation: pulseTimer 1s infinite;
-              }
-            }
-            
-            .time-text {
-              transform: rotate(90deg) translate(0, -6px); /* Fix relative to rot */
-              transform-origin: 50% 50%;
-              font-family: $font-heading;
-              font-size: 24px;
-            }
-          }
-        }
-        
-        .current-bid-display {
-          font-size: 1.2rem;
-          color: $text-secondary;
-          margin-bottom: 1.5rem;
-          
-          .val {
-            color: #fff;
-            font-size: 1.8rem;
-            font-weight: 700;
-            display: block;
-          }
-        }
-        
-        .vote-panel {
-          @include flex-between;
-          background: rgba(0,0,0,0.2);
-          border-radius: 8px;
-          padding: 0.5rem;
-          
-          .btn-vote {
-            flex: 1;
-            padding: 1rem;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 1.2rem;
-            transition: all 0.2s;
-            
-            &.bid {
-              background-color: $accent-green;
-              color: #fff;
-              &:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4); }
-            }
-            
-            &.skip {
-              background-color: $bg-surface;
-              border: 1px solid $border;
-              color: $text-secondary;
-              &:hover { background-color: rgba(255,255,255,0.1); color: #fff; }
-            }
-          }
-          
-          .tally {
-            flex: 1;
-            font-size: 0.85rem;
-            color: $text-secondary;
-            padding: 0 1rem;
-          }
-        }
-      }
+
+    .announcement-banner {
+      width: 100%;
+      text-align: center;
+      padding: 0.75rem;
+      border-radius: 8px;
+      background: rgba(244, 169, 0, 0.12);
+      border: 1px solid #F4A900;
+      color: #F4A900;
+      font-weight: 700;
+      font-size: 1.1rem;
+      animation: pulseAnnounce 1.5s infinite;
+    }
+
+    .big-bid-btn {
+      width: 100%; padding: 1.25rem; border-radius: 12px; font-size: 1.3rem; font-weight: 800;
+      background: linear-gradient(135deg, $accent-green, #0f7c3a); color: #fff;
+      transition: all 0.2s; border: none;
+      &:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(22,163,74,0.5); }
+      &:disabled, &.disabled { background: $bg-surface; color: $text-secondary; cursor: default; transform: none; box-shadow: none; }
+    }
+
+    .bid-feedback {
+      padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; text-align: center; width: 100%;
+      &.error { background: rgba(239,68,68,0.1); border: 1px solid $accent-red; color: #fca5a5; }
+      &.success { background: rgba(22,163,74,0.1); border: 1px solid $accent-green; color: #86efac; }
     }
   }
 }
 
-@keyframes slideDown {
-  from { transform: translateY(-100%); }
-  to { transform: translateY(0); }
+/* Others Panel */
+.others-panel {
+  border-left: 1px solid $border; overflow-y: auto;
+  h2 { padding: 0.75rem 1rem; font-size: 0.95rem; background: $bg-surface; border-bottom: 1px solid $border; position: sticky; top: 0; z-index: 2; }
+
+  .other-team {
+    margin: 0.5rem 0.75rem; padding: 0.6rem; border-radius: 6px; background: $bg-surface; border-left: 4px solid;
+    .ot-header { @include flex-between; font-size: 0.9rem; span { color: $accent-gold; font-weight: 600; } }
+    .ot-count { font-size: 0.75rem; color: $text-secondary; }
+    &.my-team { background: rgba(244,169,0,0.08); border: 1px solid rgba(244,169,0,0.3); border-left: 4px solid; }
+  }
+
+  .mini-log {
+    padding: 0.5rem 0.75rem;
+    .mini-log-entry { font-size: 0.8rem; padding: 0.25rem 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+  }
 }
 
-@keyframes pulseTimer {
-  0% { opacity: 1; stroke-width: 4; }
-  50% { opacity: 0.5; stroke-width: 6; }
-  100% { opacity: 1; stroke-width: 4; }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes pulseAnnounce { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+@media (max-width: 900px) {
+  .main-layout { grid-template-columns: 1fr !important; }
+  .squad-panel, .others-panel { display: none; }
 }

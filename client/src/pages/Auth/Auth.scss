@@ -1,0 +1,78 @@
+@import '../../styles/variables';
+
+.auth-page {
+  @include flex-center;
+  min-height: 100vh;
+  background: radial-gradient(circle at center, #1a2235 0%, $bg-primary 100%);
+
+  .auth-card {
+    background: $bg-surface;
+    border: 1px solid $border;
+    border-radius: 12px;
+    padding: 3rem;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+
+    h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      color: $accent-gold;
+      margin-bottom: 2rem;
+    }
+
+    .error-banner {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid $accent-red;
+      color: #fca5a5;
+      padding: 0.75rem;
+      border-radius: 4px;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: $text-secondary;
+        font-size: 0.9rem;
+      }
+      
+      input {
+        width: 100%;
+        background: rgba(0,0,0,0.2);
+        font-size: 1rem;
+        
+        &:focus {
+          border-color: $accent-gold;
+          box-shadow: 0 0 0 2px rgba(244, 169, 0, 0.2);
+        }
+      }
+    }
+
+    .auth-submit {
+      width: 100%;
+      margin-top: 1rem;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .toggle-mode {
+      text-align: center;
+      color: $text-secondary;
+      
+      span {
+        color: $accent-gold;
+        cursor: pointer;
+        font-weight: 600;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

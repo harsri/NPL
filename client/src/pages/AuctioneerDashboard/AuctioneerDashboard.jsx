@@ -1,105 +1,164 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import socketClient from '../../socket/socketClient';
-import PlayerCard from '../../components/PlayerCard/PlayerCard';
+import axios from 'axios';
 import './AuctioneerDashboard.scss';
+
+const API = 'http://localhost:5000';
 
 const AuctioneerDashboard = () => {
   const { code } = useParams();
-  const [activePlayer, setActivePlayer] = useState(null);
-  
-  // Placeholder data for the pool
-  const playersPool = [
-    { id: 'p1', name: 'Virat Kohli', role: 'BATSMAN', base_price: 2.0, is_overseas: false },
-    { id: 'p2', name: 'Pat Cummins', role: 'BOWLER', base_price: 2.0, is_overseas: true },
-    { id: 'p3', name: 'MS Dhoni', role: 'WICKETKEEPER', base_price: 2.0, is_overseas: false },
-  ];
+  const [pool, setPool] = useState([]);
+  const [state, setState] = useState(null);
+  const [filterRole, setFilterRole] = useState('ALL');
+  const [loading, setLoading] = useState(true);
 
-  const handlePutOnBlock = (player) => {
-    setActivePlayer(player);
-    socketClient.emit('auction:player_up', { roomId: code, player_id: player.id, timer_seconds: 60 });
+  // Load players once
+  useEffect(() => {
+    axios.get(`${API}/api/players`).then(res => { setPool(res.data); setLoading(false); }).catch(() => setLoading(false));
+  }, []);
+
+  // Poll auction state every 500ms
+  useEffect(() => {
+    const poll = setInterval(() => {
+      axios.get(`${API}/api/auction/state`).then(res => setState(res.data)).catch(() => {});
+    }, 500);
+    // Initial fetch
+    axios.get(`${API}/api/auction/state`).then(res => setState(res.data));
+    return () => clearInterval(poll);
+  }, []);
+
+  const soldIds = new Set(state?.soldPlayerIds || []);
+  const available = pool.filter(p => !soldIds.has(p.id) && (filterRole === 'ALL' || p.role === filterRole));
+
+  const putOnBlock = (player) => {
+    axios.post(`${API}/api/auction/put-on-block`, { player }).catch(err => alert(err.response?.data?.error || 'Error'));
   };
 
-  const handleAcceptBid = (teamId, amount) => {
-    socketClient.emit('bid:accept', { roomId: code, team_id: teamId, amount });
+  const acceptBid = () => {
+    axios.post(`${API}/api/auction/accept`).catch(err => alert(err.response?.data?.error || 'Error'));
   };
+
+  const markUnsold = () => {
+    axios.post(`${API}/api/auction/unsold`).catch(err => alert(err.response?.data?.error || 'Error'));
+  };
+
+  const askMoreBids = () => {
+    axios.post(`${API}/api/auction/ask-more-bids`).catch(err => alert(err.response?.data?.error || 'Error'));
+  };
+
+  if (loading || !state) return <div className="auctioneer-dashboard"><div className="loading-state">Loading...</div></div>;
+
+  const timerColor = state.timerRemaining <= 5 ? '#EF4444' : state.timerRemaining <= 10 ? '#F97316' : '#F4A900';
+  const timerPercent = (state.timerRemaining / 30) * 100;
 
   return (
     <div className="auctioneer-dashboard">
       <header className="dashboard-header">
-        <h1>NPL Auction Control: Room {code}</h1>
-        <button className="btn-danger end-btn">END AUCTION</button>
+        <div className="brand"><span className="cricket-icon">🏏</span><h1>NPL Auctioneer Panel</h1></div>
+        <div className="auction-stats">
+          <span className="stat">Sold: <strong>{soldIds.size}</strong></span>
+          <span className="stat">Remaining: <strong>{pool.length - soldIds.size}</strong></span>
+        </div>
       </header>
 
       <div className="dashboard-grid">
-        {/* Left: Player Pool */}
+        {/* LEFT: Player Pool */}
         <aside className="panel pool-panel">
-          <h2>Player Pool</h2>
+          <h2>🏏 Player Pool ({available.length})</h2>
           <div className="filters">
-            <select><option>All Roles</option></select>
-            <select><option>All Sets</option></select>
+            {['ALL', 'BATSMAN', 'BOWLER', 'ALLROUNDER', 'WICKETKEEPER'].map(r => (
+              <button key={r} className={`filter-btn ${filterRole === r ? 'active' : ''}`} onClick={() => setFilterRole(r)}>
+                {r === 'ALL' ? 'All' : r === 'WICKETKEEPER' ? 'WK' : r === 'ALLROUNDER' ? 'AR' : r.charAt(0) + r.slice(1).toLowerCase()}
+              </button>
+            ))}
           </div>
-          
           <div className="player-list">
-            {playersPool.map(p => (
-              <div key={p.id} className={`list-item ${activePlayer?.id === p.id ? 'active' : ''}`} onClick={() => handlePutOnBlock(p)}>
-                <span className="name">{p.name}</span>
-                <span className="price">₹{p.base_price.toFixed(2)} Cr</span>
+            {available.map(p => (
+              <div key={p.id} className={`player-item ${state.activePlayer?.id === p.id ? 'on-block' : ''}`}
+                onClick={() => state.status === 'WAITING' && putOnBlock(p)}>
+                <div className="player-info">
+                  <span className="player-name">{p.name}</span>
+                  <span className="player-meta">{p.role} • {p.country}</span>
+                </div>
+                <div className="player-stats-mini">
+                  <span className="stat-badge">🏏{p.batting_strength}</span>
+                  <span className="stat-badge">⚾{p.bowling_strength}</span>
+                </div>
+                <span className="base-price">₹{p.base_price} Cr</span>
               </div>
             ))}
           </div>
         </aside>
 
-        {/* Center: Live Action */}
+        {/* CENTER */}
         <main className="panel live-panel">
-          <div className="center-stage">
-            {activePlayer ? (
-              <>
-                <PlayerCard player={activePlayer} />
-                <div className="live-activity">
-                  <h3>Incoming Bids</h3>
-                  <div className="bid-stream">
-                    {/* Placeholder dynamic bids */}
-                    <div className="bid-card">
-                      <div className="info">
-                        <strong>Mumbai Indians</strong>
-                        <span>₹2.50 Cr</span>
-                      </div>
-                      <div className="actions">
-                        <button className="btn-accept" onClick={() => handleAcceptBid('team1', 2.50)}>ACCEPT</button>
-                        <button className="btn-reject">REJECT</button>
-                      </div>
-                    </div>
-                  </div>
+          {state.activePlayer ? (
+            <div className="auction-stage">
+              <div className="timer-section">
+                <svg className="timer-ring" viewBox="0 0 100 100">
+                  <circle className="ring-bg" cx="50" cy="50" r="42" />
+                  <circle className="ring-fill" cx="50" cy="50" r="42" style={{ stroke: timerColor, strokeDasharray: 264, strokeDashoffset: 264 - (264 * timerPercent) / 100 }} />
+                  <text x="50" y="55" textAnchor="middle" className="timer-text" fill="#fff">{state.timerRemaining}s</text>
+                </svg>
+              </div>
+              <div className="player-showcase">
+                <div className="player-avatar">{state.activePlayer.name.split(' ').map(w => w[0]).join('')}</div>
+                <h2 className="player-name">{state.activePlayer.name}</h2>
+                <div className="player-tags">
+                  <span className="tag role">{state.activePlayer.role}</span>
+                  <span className="tag country">{state.activePlayer.country}</span>
+                  {state.activePlayer.is_overseas && <span className="tag overseas">OVERSEAS</span>}
                 </div>
-              </>
-            ) : (
-              <div className="waiting-state">Select a player from the pool to put on the block.</div>
-            )}
+                <div className="strength-bars">
+                  <div className="bar-row"><span>Batting</span><div className="bar-track"><div className="bar-fill bat" style={{ width: `${state.activePlayer.batting_strength * 10}%` }}></div></div><span>{state.activePlayer.batting_strength}/10</span></div>
+                  <div className="bar-row"><span>Bowling</span><div className="bar-track"><div className="bar-fill bowl" style={{ width: `${state.activePlayer.bowling_strength * 10}%` }}></div></div><span>{state.activePlayer.bowling_strength}/10</span></div>
+                </div>
+              </div>
+              <div className="bid-display">
+                <span className="label">Current Bid</span>
+                <span className="amount">₹{state.currentBid.toFixed(2)} Cr</span>
+                {state.leadingTeamId && <span className="leading-team">Leading: {state.teams.find(t => t.id === state.leadingTeamId)?.name}</span>}
+              </div>
+
+              {/* Announcement Banner */}
+              {state.announcement && <div className="announcement-banner">{state.announcement}</div>}
+
+              <div className="auctioneer-controls">
+                <button className="btn-ask-more" onClick={askMoreBids}>📢 Any Further Bids?</button>
+                <button className="btn-accept" onClick={acceptBid} disabled={!state.leadingTeamId}>✅ SOLD</button>
+                <button className="btn-unsold" onClick={markUnsold}>❎ UNSOLD</button>
+              </div>
+            </div>
+          ) : (
+            <div className="empty-stage">
+              <div className="cricket-ball">🏏</div>
+              <h2>Select a player from the pool</h2>
+              <p>Click any player on the left to put them on the auction block</p>
+              {soldIds.size === pool.length && pool.length > 0 && <div className="auction-complete"><h2>🏆 Auction Complete!</h2></div>}
+            </div>
+          )}
+          <div className="activity-log">
+            <h3>📋 Auction Log</h3>
+            <div className="log-entries">
+              {(state.log || []).length === 0 ? <p className="no-log">Activity will appear here...</p> :
+                state.log.map((e, i) => <div key={i} className="log-entry"><span className="log-time">{e.time}</span><span className="log-msg">{e.msg}</span></div>)}
+            </div>
           </div>
         </main>
 
-        {/* Right: Team Tracker */}
+        {/* RIGHT: Teams */}
         <aside className="panel teams-panel">
-          <h2>Team Tracker</h2>
-          <div className="team-stats-card">
-             <h4>Mumbai Indians</h4>
-             <div className="progress-bar"><div className="fill" style={{width: '60%'}}></div></div>
-             <div className="stats">
-               <span>P: ₹75Cr</span>
-               <span>Sq: 15/25</span>
-               <span>Ov: 4/6</span>
-             </div>
-          </div>
-          <div className="team-stats-card">
-             <h4>Chennai Super Kings</h4>
-             <div className="progress-bar"><div className="fill" style={{width: '80%'}}></div></div>
-             <div className="stats">
-               <span>P: ₹40Cr</span>
-               <span>Sq: 20/25</span>
-               <span>Ov: 5/6</span>
-             </div>
-          </div>
+          <h2>📊 Team Tracker</h2>
+          {state.teams.map(team => (
+            <div key={team.id} className="team-card" style={{ borderLeftColor: team.color }}>
+              <div className="team-header">
+                <h3>{team.name}</h3>
+                <span className="purse" style={{ color: team.purse < 20 ? '#EF4444' : '#16A34A' }}>₹{team.purse.toFixed(1)} Cr</span>
+              </div>
+              <div className="team-stats-row"><span>Squad: {team.squad.length}</span><span>Overseas: {team.squad.filter(p => p.is_overseas).length}/6</span></div>
+              {team.squad.length > 0 && <div className="squad-list">{team.squad.map(p => <div key={p.id} className="squad-player"><span>{p.name}</span><span className="sold-price">₹{p.soldPrice.toFixed(2)}</span></div>)}</div>}
+            </div>
+          ))}
         </aside>
       </div>
     </div>
