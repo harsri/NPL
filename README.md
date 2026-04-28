@@ -1,80 +1,92 @@
+
 # IIIT Nagpur Premier League (NPL) — Auction System
 
-Brief: A web-based real-time auction platform for organizing the IIIT Nagpur Premier League (NPL). This repository contains a React + Vite frontend and a Node.js + Express backend (with Prisma + SQLite) implementing player management, real-time bidding, guest/team manager flows, and auctioneer controls.
+Overview
+This repository implements a web-based auction application designed to run the IIIT Nagpur Premier League (NPL). It provides a polished developer setup and implements the core assignment requirements: a preloaded player catalogue, four team managers who bid in real time, and an auctioneer who controls the auction flow. The implementation uses a React + Vite frontend and a Node.js + Express backend with Prisma + SQLite for persistence.
 
-**Features**
-- **Players**: Preloaded player catalogue (name, role/skill, base price, batting & bowling strengths, optional photo).
-- **Teams / Managers**: 4 team managers (guest tokens) can join rooms and bid.
-- **Auctioneer**: Auctioneer controls the bidding process and accepts/rejects bids; accepted players are assigned to the team roster and removed from the active auction list.
-- **Real-time**: Socket.io-based live bidding, chat, presence and auction events.
-- **Persistence**: Prisma + SQLite store players, rooms, users and auction results. Seed scripts provided to populate players.
-- **Auth**: JWT-based auctioneer auth and short-lived guest tokens for managers.
-- **UI Components**: PlayerCard, TeamSidebar, Timer, BidList, ChatPanel, VotePanel, RTM overlay and practice bot support.
+Assignment requirements (fulfilled)
+- Players: preloaded set of players with name, role/skill (batting, bowling or both), base price, batting and bowling strengths, and optional photo. Seed data is provided in `server/prisma/seed-data/players.json`.
+- 4 Team Managers: the system supports guest tokens for managers to join a room and participate as a manager.
+- Auctioneer: auctioneer user can register/login and control bidding (accept/reject). Accepted players are removed from the auction list and assigned to the winning team.
+- Real-time bidding: Socket.io powers live bidding, chat, presence, and auction events between clients and server.
 
-**Tech Stack**
-- **Frontend**: React (Vite), Zustand, Sass, Socket.io-client
-- **Backend**: Node.js, Express, Socket.io, Prisma ORM, SQLite, JWT, bcrypt
-- **Dev tools**: ESLint, Vite
+What is implemented (features)
+- Preloaded player catalogue + seeding (Prisma seed script).
+- JWT-based authentication for auctioneer and short-lived guest tokens for team managers.
+- Room management with support for up to 4 teams per room and configurable purse/timer settings.
+- Auction flow: bid announcements, accept/reject actions, assignment of players to teams, and recording auction results.
+- UI components: `PlayerCard`, `TeamSidebar`, `Timer`, `BidList`, `ChatPanel`, `VotePanel`, RTM overlay and a practice bot used for local testing.
+- Persistence: Prisma models for `User`, `Room`, `Team`, `Player`, and `AuctionResult` stored in SQLite (dev).
 
-**Quick Start (local, development)**
+Tech stack
+- Frontend: React (Vite), Zustand, Sass, Socket.io-client
+- Backend: Node.js, Express, Socket.io, Prisma ORM, SQLite, JWT, bcrypt
+
+Developer quick start (local)
 
 Prerequisites
-- Node.js (v16+ recommended) and npm
-- Git
+- Node.js (v16+), npm
 
-1) Start the backend
+Backend (server)
 
-```
+1. Install dependencies
+
+```bash
 cd server
 npm install
-# generate Prisma client and apply schema
+```
+
+2. Prepare Prisma and database
+
+```bash
 npx prisma generate
 npx prisma db push
-# seed players (only inserts if DB is empty)
+```
+
+3. Seed players (safe: only runs if DB empty)
+
+```bash
 node prisma/seed.js
-# create a local .env (see below) then start the server
+```
+
+4. Create a local `.env` (see Environment section) and start the server
+
+```bash
 node src/index.js
 ```
 
-2) Start the frontend
+Frontend (client)
 
-```
+```bash
 cd client
 npm install
 npm run dev
 ```
 
-Open the app in your browser at the Vite dev URL (typically http://localhost:5173) and the server health check at `http://localhost:5000/health` (or the `PORT` you set).
+Open the frontend at the Vite dev URL (usually http://localhost:5173). Server health: `http://localhost:5000/health`.
 
-**Important Files / Endpoints**
-- **Frontend entry & scripts**: [client/package.json](client/package.json)
-- **Server entry**: [server/src/index.js](server/src/index.js)
-- **Prisma schema & seed**: [server/prisma/schema.prisma](server/prisma/schema.prisma) and [server/prisma/seed.js](server/prisma/seed.js)
-- **Auth & routes**: [server/src/routes/auth.js](server/src/routes/auth.js), [server/src/routes/players.js](server/src/routes/players.js), [server/src/routes/rooms.js](server/src/routes/rooms.js), [server/src/routes/auction.js](server/src/routes/auction.js)
-- **Socket handlers**: [server/src/socket/index.js](server/src/socket/index.js)
+Key routes and sockets
+- Health: `GET /health`
+- Players: `GET /api/players`
+- Auth: `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/guest`
+- Rooms / Auction: routes in `server/src/routes/*`
+- Socket handlers: `server/src/socket/index.js` and per-feature socket handlers.
 
-**Environment (env) — what you need and how to fix leaked files**
+Environment, secrets, and how to fix `.env` leaks
 
-Required env variables (server):
-- **JWT_SECRET**: a long random string used to sign JWTs. Example `JWT_SECRET=super_long_random_value`
-- **PORT** (optional): port to run server (default 5000)
+Required server environment variables
+- `JWT_SECRET` — Recommended: a long random value used to sign JWTs.
+- `PORT` — Optional, default 5000.
 
-Recommended workflow for env files
-- Create a non-committed `.env` file in the `server/` folder with the keys above.
-- Add `server/.env` to `.gitignore` so it never gets committed.
+Create a file `server/.env` locally with the required variables. Never commit `.env`.
 
-Example `server/.env.example` (add this to the repo):
-
-```
-JWT_SECRET=replace_with_a_strong_random_value
-PORT=5000
-```
+Add `server/.env.example` to the repo (example file exists) and add `server/.env` to `.gitignore`.
 
 If you accidentally committed `.env` with secrets
-- Rotate the exposed credentials immediately (change JWT secrets, API keys, passwords).
-- Remove the file from git history and stop tracking it locally:
+1. Rotate the exposed values immediately (replace the JWT_SECRET and any other exposed keys).
+2. Stop tracking the file and add it to `.gitignore`:
 
-```
+```bash
 git rm --cached server/.env
 echo "server/.env" >> .gitignore
 git add .gitignore
@@ -82,39 +94,37 @@ git commit -m "Remove server .env and ignore it"
 git push
 ```
 
-- If the secret was pushed previously and needs to be purged from history, use a history-cleaning tool such as `git filter-repo` or the BFG Repo-Cleaner. Example (BFG):
+3. If you must remove the secret from repository history, use a history-rewrite tool such as `git filter-repo` or BFG, then rotate secrets. Example (BFG) — run from a fresh clone:
 
-```
-# delete all .env files from history (run from a fresh clone)
+```bash
+# delete all .env files from history
 bfg --delete-files .env
 git reflog expire --expire=now --all && git gc --prune=now --aggressive
 git push --force
 ```
 
-Always rotate keys after history rewrites. If you're not comfortable rewriting history, contact your repo admin or a teammate for help.
+Warning: rewriting history is destructive — coordinate with collaborators and rotate secrets after rewriting.
 
-**API / Manual testing**
-- Health: `GET /health`
-- Players: `GET /api/players`
-- Auth: `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/guest`
-- Rooms / Auction: routes under `server/src/routes/*` (see files linked above)
+Testing guidance
+- Manual: curl or Postman against the endpoints above. Example health check:
 
-Use `curl` or Postman to test the endpoints while the server is running.
-
-Example health check:
-
-```
+```bash
 curl http://localhost:5000/health
 ```
 
-**Notes & Next Steps**
-- Production: replace SQLite with a managed RDBMS (Postgres/MySQL) and set `DATABASE_URL` accordingly in `prisma/schema.prisma`.
-- Add convenient server scripts in `server/package.json` (e.g., `dev`, `start`) for easier startup.
-- Add automated tests (Jest / Playwright / Cypress) for backend and frontend flows.
-- CI/CD: add GitHub Actions for linting and deploy steps.
+- Frontend: run `client` in dev mode and exercise auction flows locally (open multiple browser windows to simulate managers + auctioneer).
+- Backend: add unit and integration tests (recommended next step) using Jest or similar; add end-to-end tests with Cypress or Playwright for auction flows.
 
-**Contribution & Contact**
-If you'd like me to add start scripts, CI, or create `server/.env.example` automatically, I can patch the repo — tell me which to do next.
+Project standards and recommendations
+- Maintain clear separation: UI in `client/`, API and sockets in `server/`.
+- Follow best practices: linting (ESLint), meaningful commit messages, and small PRs.
+- Error handling: server routes return structured JSON errors; add centralized error middleware for consistent responses.
+- Production readiness: replace SQLite with Postgres/MySQL, add HTTPS, and configure environment variables for secrets and DB connection.
 
----
-Made with care for the IIIT Nagpur Premier League assignment.
+Next steps I can apply for you
+- Add `server/.env.example` (I will add it now).
+- Add `dev` and `start` scripts to `server/package.json` (I will add them now).
+- Add a root-level `dev` script to run both client and server concurrently (requires adding a dev dependency).
+- Add CI (GitHub Actions) and basic test scaffolding.
+
+If you want any of the suggested changes applied now, tell me which one(s) and I will implement them.
