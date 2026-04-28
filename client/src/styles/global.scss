@@ -1,0 +1,75 @@
+@import 'variables';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $font-body;
+  background-color: $bg-primary;
+  color: $text-primary;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-heading;
+  letter-spacing: 1px;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: $font-body;
+}
+
+input, select {
+  font-family: $font-body;
+  background: $bg-surface;
+  border: 1px solid $border;
+  color: $text-primary;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  outline: none;
+  
+  &:focus {
+    border-color: $accent-gold;
+  }
+}
+
+// Utility Classes
+.btn-primary {
+  background-color: $accent-gold;
+  color: #000;
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  transition: opacity 0.2s;
+  
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-danger {
+  background-color: $accent-red;
+  color: #FFF;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+}
+
+.card {
+  background-color: $bg-surface;
+  border: 1px solid $border;
+  border-radius: 8px;
+  padding: 1rem;
+}

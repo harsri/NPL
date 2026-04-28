@@ -1,0 +1,86 @@
+@import '../../styles/variables';
+
+.landing-page {
+  @include flex-center;
+  flex-direction: column;
+  min-height: 100vh;
+  background: radial-gradient(circle at center, #1a2235 0%, $bg-primary 100%);
+  color: $text-primary;
+  padding: 2rem;
+  
+  .hero-section {
+    text-align: center;
+    margin-bottom: 4rem;
+    
+    .title {
+      color: $accent-gold;
+      font-size: 5rem;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      text-shadow: 0 4px 12px rgba(244, 169, 0, 0.3);
+    }
+    
+    .subtitle {
+      font-family: $font-body;
+      font-size: 1.5rem;
+      color: $text-secondary;
+      margin-bottom: 3rem;
+    }
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    
+    .btn-secondary {
+      background-color: transparent;
+      color: $text-primary;
+      border: 2px solid $border;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+      transition: all 0.2s;
+      
+      &:hover {
+        border-color: $text-primary;
+        background-color: rgba(255,255,255, 0.05);
+      }
+    }
+    
+    .btn-tertiary {
+      background-color: $accent-green;
+      color: #FFF;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+      transition: opacity 0.2s;
+      
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+  }
+  
+  .rooms-container {
+    width: 100%;
+    max-width: 800px;
+    background: $bg-surface;
+    border: 1px solid $border;
+    border-radius: 8px;
+    padding: 2rem;
+    
+    h3 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid $border;
+      padding-bottom: 0.5rem;
+    }
+    
+    .no-rooms-msg {
+      color: $text-secondary;
+      text-align: center;
+      padding: 2rem 0;
+    }
+  }
+}

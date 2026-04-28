@@ -1,0 +1,222 @@
+[
+  {
+    "name": "Virat Kohli",
+    "role": "BATSMAN",
+    "country": "India",
+    "ipl_franchise": "RCB",
+    "base_price": 2.0,
+    "batting_strength": 10,
+    "bowling_strength": 0,
+    "is_overseas": false,
+    "is_uncapped": false
+  },
+  {
+    "name": "Rohit Sharma",
+    "role": "BATSMAN",
+    "country": "India",
+    "ipl_franchise": "MI",
+    "base_price": 2.0,
+    "batting_strength": 9,
+    "bowling_strength": 0,
+    "is_overseas": false,
+    "is_uncapped": false
+  },
+  {
+    "name": "MS Dhoni",
+    "role": "WICKETKEEPER",
+    "country": "India",
+    "ipl_franchise": "CSK",
+    "base_price": 2.0,
+    "batting_strength": 8,
+    "bowling_strength": 0,
+    "is_overseas": false,
+    "is_uncapped": false
+  },
+  {
+    "name": "Pat Cummins",
+    "role": "BOWLER",
+    "country": "Australia",
+    "ipl_franchise": "SRH",
+    "base_price": 2.0,
+    "batting_strength": 5,
+    "bowling_strength": 9,
+    "is_overseas": true,
+    "is_uncapped": false
+  },
+  {
+    "name": "Jasprit Bumrah",
+    "role": "BOWLER",
+    "country": "India",
+    "ipl_franchise": "MI",
+    "base_price": 2.0,
+    "batting_strength": 2,
+    "bowling_strength": 10,
+    "is_overseas": false,
+    "is_uncapped": false
+  },
+  {
+    "name": "Hardik Pandya",
+    "role": "ALLROUNDER",
+    "country": "India",
+    "ipl_franchise": "MI",
+    "base_price": 2.0,
+    "batting_strength": 8,
+    "bowling_strength": 7,
+    "is_overseas": false,
+    "is_uncapped": false
+  },
+  {
+    "name": "Rashid Khan",
+    "role": "BOWLER",
+    "country": "Afghanistan",
+    "ipl_franchise": "GT",
+    "base_price": 2.0,
+    "batting_strength": 6,
+    "bowling_strength": 9,
+    "is_overseas": true,
+    "is_uncapped": false
+  },
+  {
+    "name": "Suryakumar Yadav",
+    "role": "BATSMAN",
+    "country": "India",
+    "ipl_franchise": "MI",
+    "base_price": 2.0,
+    "batting_strength": 10,
+    "bowling_strength": 0,
+    "is_overseas": false,
+    "is_uncapped": false
+  },
+  {
+    "name": "Rishabh Pant",
+    "role": "WICKETKEEPER",
+    "country": "India",
+    "ipl_franchise": "DC",
+    "base_price": 2.0,
+    "batting_strength": 8,
+    "bowling_strength": 0,
+    "is_overseas": false,
+    "is_uncapped": false
+  },
+  {
+    "name": "Glenn Maxwell",
+    "role": "ALLROUNDER",
+    "country": "Australia",
+    "ipl_franchise": "RCB",
+    "base_price": 2.0,
+    "batting_strength": 9,
+    "bowling_strength": 5,
+    "is_overseas": true,
+    "is_uncapped": false
+  },
+  {
+    "name": "Heinrich Klaasen",
+    "role": "WICKETKEEPER",
+    "country": "South Africa",
+    "ipl_franchise": "SRH",
+    "base_price": 2.0,
+    "batting_strength": 9,
+    "bowling_strength": 0,
+    "is_overseas": true,
+    "is_uncapped": false
+  },
+  {
+    "name": "Mitchell Starc",
+    "role": "BOWLER",
+    "country": "Australia",
+    "ipl_franchise": "KKR",
+    "base_price": 2.0,
+    "batting_strength": 3,
+    "bowling_strength": 8,
+    "is_overseas": true,
+    "is_uncapped": false
+  },
+  {
+    "name": "Yashasvi Jaiswal",
+    "role": "BATSMAN",
+    "country": "India",
+    "ipl_franchise": "RR",
+    "base_price": 1.5,
+    "batting_strength": 8,
+    "bowling_strength": 0,
+    "is_overseas": false,
+    "is_uncapped": false
+  },
+  {
+    "name": "Tushar Deshpande",
+    "role": "BOWLER",
+    "country": "India",
+    "ipl_franchise": "CSK",
+    "base_price": 0.5,
+    "batting_strength": 1,
+    "bowling_strength": 6,
+    "is_overseas": false,
+    "is_uncapped": false
+  },
+  {
+    "name": "Rajat Patidar",
+    "role": "BATSMAN",
+    "country": "India",
+    "ipl_franchise": "RCB",
+    "base_price": 0.5,
+    "batting_strength": 7,
+    "bowling_strength": 0,
+    "is_overseas": false,
+    "is_uncapped": true
+  },
+  {
+    "name": "Mayank Yadav",
+    "role": "BOWLER",
+    "country": "India",
+    "ipl_franchise": "LSG",
+    "base_price": 0.5,
+    "batting_strength": 1,
+    "bowling_strength": 8,
+    "is_overseas": false,
+    "is_uncapped": true
+  },
+  {
+    "name": "Rinku Singh",
+    "role": "BATSMAN",
+    "country": "India",
+    "ipl_franchise": "KKR",
+    "base_price": 1.0,
+    "batting_strength": 8,
+    "bowling_strength": 0,
+    "is_overseas": false,
+    "is_uncapped": false
+  },
+  {
+    "name": "Cameron Green",
+    "role": "ALLROUNDER",
+    "country": "Australia",
+    "ipl_franchise": "RCB",
+    "base_price": 2.0,
+    "batting_strength": 7,
+    "bowling_strength": 6,
+    "is_overseas": true,
+    "is_uncapped": false
+  },
+  {
+    "name": "Jitesh Sharma",
+    "role": "WICKETKEEPER",
+    "country": "India",
+    "ipl_franchise": "PBKS",
+    "base_price": 0.5,
+    "batting_strength": 6,
+    "bowling_strength": 0,
+    "is_overseas": false,
+    "is_uncapped": true
+  },
+  {
+    "name": "Matheesha Pathirana",
+    "role": "BOWLER",
+    "country": "Sri Lanka",
+    "ipl_franchise": "CSK",
+    "base_price": 1.0,
+    "batting_strength": 2,
+    "bowling_strength": 8,
+    "is_overseas": true,
+    "is_uncapped": false
+  }
+]

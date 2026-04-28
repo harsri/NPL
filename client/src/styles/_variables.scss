@@ -1,0 +1,24 @@
+$bg-primary:    #0A0E1A;   // deep navy
+$bg-surface:    #111827;   // card surfaces
+$bg-elevated:   #1F2937;   // modals, sidebars
+$accent-gold:   #F4A900;   // primary accent
+$accent-green:  #16A34A;   // secondary
+$accent-red:    #EF4444;   // danger, sold stamp
+$text-primary:  #F9FAFB;
+$text-secondary:#9CA3AF;
+$border:        #374151;
+
+$font-heading:  'Bebas Neue', sans-serif;
+$font-body:     'DM Sans', sans-serif;
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

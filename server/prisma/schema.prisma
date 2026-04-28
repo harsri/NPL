@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  username      String
+  password_hash String
+  created_at    DateTime @default(now())
+}
+
+model Room {
+  id               String          @id @default(uuid())
+  code             String          @unique
+  name             String
+  is_public        Boolean         @default(true)
+  status           RoomStatus      @default(LOBBY)
+  auctioneer_id    String
+  co_auctioneer_id String?
+  purse_per_team   Float           @default(120)
+  timer_seconds    Int             @default(60)
+  team_assignment  AssignmentMode  @default(CHOICE)
+  max_teams        Int             @default(4)
+  rtm_cards        Int             @default(2)
+  created_at       DateTime        @default(now())
+  teams            Team[]
+  auction_results  AuctionResult[]
+}
+
+model Team {
+  id                String          @id @default(uuid())
+  room_id           String
+  room              Room            @relation(fields: [room_id], references: [id])
+  name              String
+  captain_id        String
+  purse_remaining   Float
+  rtm_cards         Int
+  is_disqualified   Boolean         @default(false)
+  disqualify_reason String?
+  members           TeamMember[]
+  acquired_players  AuctionResult[]
+}
+
+model TeamMember {
+  id         String     @id @default(uuid())
+  team_id    String
+  team       Team       @relation(fields: [team_id], references: [id])
+  user_id    String?
+  guest_name String?
+  role       MemberRole @default(MEMBER)
+}
+
+model Player {
+  id               String          @id @default(uuid())
+  name             String
+  country          String
+  role             PlayerRole
+  ipl_franchise    String?
+  is_overseas      Boolean
+  is_uncapped      Boolean
+  base_price       Float
+  batting_strength Int
+  bowling_strength Int
+  photo_url        String?
+  auction_results  AuctionResult[]
+}
+
+model AuctionResult {
+  id          String     @id @default(uuid())
+  room_id     String
+  room        Room       @relation(fields: [room_id], references: [id])
+  player_id   String
+  player      Player     @relation(fields: [player_id], references: [id])
+  team_id     String?
+  team        Team?      @relation(fields: [team_id], references: [id])
+  final_price Float?
+  rtm_used    Boolean    @default(false)
+  status      SaleStatus
+  created_at  DateTime   @default(now())
+}
+
+enum RoomStatus {
+  LOBBY
+  ACTIVE
+  PAUSED
+  ENDED
+}
+
+enum AssignmentMode {
+  CHOICE
+  RANDOM
+}
+
+enum MemberRole {
+  CAPTAIN
+  MEMBER
+}
+
+enum PlayerRole {
+  BATSMAN
+  BOWLER
+  ALLROUNDER
+  WICKETKEEPER
+}
+
+enum SaleStatus {
+  SOLD
+  UNSOLD
+  RTM_SOLD
+}

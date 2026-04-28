@@ -1,0 +1,188 @@
+@import '../../styles/variables';
+
+.team-manager-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: $bg-primary;
+
+  .team-header {
+    height: 60px;
+    background-color: $bg-surface;
+    border-bottom: 1px solid $border;
+    @include flex-between;
+    padding: 0 2rem;
+    
+    .brand {
+      font-family: $font-heading;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    
+    .purse-tracker {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: $text-secondary;
+      
+      .amt {
+        color: $accent-gold;
+        margin-left: 0.5rem;
+      }
+    }
+  }
+
+  .warnings-container {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    
+    .warning-banner {
+      background-color: rgba(245, 158, 11, 0.9);
+      color: #000;
+      text-align: center;
+      padding: 0.5rem;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      animation: slideDown 0.3s ease-out forwards;
+    }
+  }
+
+  .main-content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    
+    .sidebar {
+      width: 300px;
+      background-color: $bg-elevated;
+      padding: 1.5rem;
+      border-right: 1px solid $border;
+      
+      &.right {
+        border-right: none;
+        border-left: 1px solid $border;
+      }
+      
+      h3 {
+        color: $text-secondary;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+      }
+    }
+    
+    .center-stage {
+      flex: 1;
+      @include flex-center;
+      flex-direction: column;
+      padding: 2rem;
+      position: relative;
+      background: radial-gradient(circle at center, #111827 0%, $bg-primary 100%);
+      
+      .bidding-controls {
+        margin-top: 2rem;
+        width: 100%;
+        max-width: 500px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        
+        .timer-wrapper {
+          margin-bottom: 1rem;
+          
+          .timer-ring {
+            transform: rotate(-90deg);
+            
+            .ring-bg {
+              fill: none;
+              stroke: rgba(255,255,255,0.1);
+              stroke-width: 4;
+            }
+            
+            .ring-prog {
+              fill: none;
+              stroke-width: 4;
+              stroke-linecap: round;
+              transition: stroke-dashoffset 1s linear, stroke 0.3s ease;
+              
+              &.pulse {
+                animation: pulseTimer 1s infinite;
+              }
+            }
+            
+            .time-text {
+              transform: rotate(90deg) translate(0, -6px); /* Fix relative to rot */
+              transform-origin: 50% 50%;
+              font-family: $font-heading;
+              font-size: 24px;
+            }
+          }
+        }
+        
+        .current-bid-display {
+          font-size: 1.2rem;
+          color: $text-secondary;
+          margin-bottom: 1.5rem;
+          
+          .val {
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: block;
+          }
+        }
+        
+        .vote-panel {
+          @include flex-between;
+          background: rgba(0,0,0,0.2);
+          border-radius: 8px;
+          padding: 0.5rem;
+          
+          .btn-vote {
+            flex: 1;
+            padding: 1rem;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            transition: all 0.2s;
+            
+            &.bid {
+              background-color: $accent-green;
+              color: #fff;
+              &:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4); }
+            }
+            
+            &.skip {
+              background-color: $bg-surface;
+              border: 1px solid $border;
+              color: $text-secondary;
+              &:hover { background-color: rgba(255,255,255,0.1); color: #fff; }
+            }
+          }
+          
+          .tally {
+            flex: 1;
+            font-size: 0.85rem;
+            color: $text-secondary;
+            padding: 0 1rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes pulseTimer {
+  0% { opacity: 1; stroke-width: 4; }
+  50% { opacity: 0.5; stroke-width: 6; }
+  100% { opacity: 1; stroke-width: 4; }
+}

@@ -1,0 +1,160 @@
+@import '../../styles/variables';
+
+.lobby-container {
+  min-height: 100vh;
+  padding: 3rem;
+  background-color: $bg-primary;
+  color: $text-primary;
+
+  .lobby-header {
+    text-align: center;
+    margin-bottom: 4rem;
+
+    h1 {
+      font-size: 3rem;
+      color: #fff;
+      
+      .room-code {
+        color: $accent-gold;
+        padding: 0.2rem 1rem;
+        background: rgba(244, 169, 0, 0.1);
+        border: 2px dashed $accent-gold;
+        border-radius: 8px;
+        letter-spacing: 4px;
+      }
+    }
+
+    p {
+      color: $text-secondary;
+      margin-top: 1rem;
+      font-size: 1.2rem;
+    }
+  }
+
+  .teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto 4rem;
+
+    .team-card {
+      background: $bg-surface;
+      border: 1px solid $border;
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s;
+      
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      }
+
+      .team-name {
+        font-size: 1.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .team-members {
+        min-height: 120px;
+
+        .empty-text {
+          color: $text-secondary;
+          font-style: italic;
+          text-align: center;
+          padding-top: 2rem;
+        }
+
+        .member {
+          @include flex-between;
+          background: rgba(255,255,255,0.05);
+          padding: 0.75rem 1rem;
+          border-radius: 6px;
+          margin-bottom: 0.5rem;
+
+          .avatar {
+            background: $accent-gold;
+            color: #000;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            @include flex-center;
+            font-weight: bold;
+          }
+
+          .name {
+            flex: 1;
+            margin-left: 1rem;
+          }
+
+          .role-badge {
+            background: $accent-green;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: bold;
+          }
+
+          &.captain {
+            border: 1px solid rgba(22, 163, 74, 0.4);
+          }
+        }
+      }
+
+      .btn-join {
+        width: 100%;
+        margin-top: 1rem;
+        padding: 0.75rem;
+        background: transparent;
+        color: $accent-gold;
+        border: 1px solid $accent-gold;
+        border-radius: 6px;
+        font-weight: bold;
+        transition: all 0.2s;
+
+        &:hover {
+          background: $accent-gold;
+          color: #000;
+        }
+      }
+    }
+  }
+
+  .auctioneer-controls {
+    text-align: center;
+
+    .start-btn {
+      font-size: 1.5rem;
+      padding: 1rem 3rem;
+      animation: pulseGlow 2s infinite;
+    }
+  }
+
+  .waiting-indicator {
+    @include flex-center;
+    flex-direction: column;
+    color: $text-secondary;
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255,255,255,0.1);
+      border-left-color: $accent-gold;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 0 rgba(244, 169, 0, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(244, 169, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(244, 169, 0, 0); }
+}
