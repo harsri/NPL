@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import API_BASE_URL from '../../config/api';
 import './Lobby.scss';
-
-const API = 'http://localhost:5000';
 
 const TEAM_OPTIONS = [
   { id: 'team1', name: 'Mumbai Indians', shortName: 'MI', color: '#004BA0' },
@@ -26,7 +25,7 @@ const Lobby = () => {
     if (isAuctioneer) return; // Auctioneer doesn't need to poll
 
     const poll = setInterval(() => {
-      axios.get(`${API}/api/auction/state`).then(res => {
+      axios.get(`${API_BASE_URL}/api/auction/state`).then(res => {
         // If the auction is in BIDDING or has sold players, it's started
         if (res.data.status === 'BIDDING' || res.data.soldPlayerIds.length > 0) {
           setAuctionStarted(true);
@@ -49,7 +48,7 @@ const Lobby = () => {
   const handleTeamReady = (teamId) => {
     setSelectedTeam(teamId);
     // If auction is already started, go directly
-    axios.get(`${API}/api/auction/state`).then(res => {
+    axios.get(`${API_BASE_URL}/api/auction/state`).then(res => {
       if (res.data.status === 'BIDDING' || res.data.soldPlayerIds.length > 0) {
         navigate(`/room/${code}/team?team=${teamId}`);
       }

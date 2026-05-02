@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import API_BASE_URL from '../../config/api';
 import './AuctioneerDashboard.scss';
-
-const API = 'http://localhost:5000';
 
 const AuctioneerDashboard = () => {
   const { code } = useParams();
@@ -14,16 +13,16 @@ const AuctioneerDashboard = () => {
 
   // Load players once
   useEffect(() => {
-    axios.get(`${API}/api/players`).then(res => { setPool(res.data); setLoading(false); }).catch(() => setLoading(false));
+    axios.get(`${API_BASE_URL}/api/players`).then(res => { setPool(res.data); setLoading(false); }).catch(() => setLoading(false));
   }, []);
 
   // Poll auction state every 500ms
   useEffect(() => {
     const poll = setInterval(() => {
-      axios.get(`${API}/api/auction/state`).then(res => setState(res.data)).catch(() => {});
+      axios.get(`${API_BASE_URL}/api/auction/state`).then(res => setState(res.data)).catch(() => {});
     }, 500);
     // Initial fetch
-    axios.get(`${API}/api/auction/state`).then(res => setState(res.data));
+    axios.get(`${API_BASE_URL}/api/auction/state`).then(res => setState(res.data));
     return () => clearInterval(poll);
   }, []);
 
@@ -31,19 +30,19 @@ const AuctioneerDashboard = () => {
   const available = pool.filter(p => !soldIds.has(p.id) && (filterRole === 'ALL' || p.role === filterRole));
 
   const putOnBlock = (player) => {
-    axios.post(`${API}/api/auction/put-on-block`, { player }).catch(err => alert(err.response?.data?.error || 'Error'));
+    axios.post(`${API_BASE_URL}/api/auction/put-on-block`, { player }).catch(err => alert(err.response?.data?.error || 'Error'));
   };
 
   const acceptBid = () => {
-    axios.post(`${API}/api/auction/accept`).catch(err => alert(err.response?.data?.error || 'Error'));
+    axios.post(`${API_BASE_URL}/api/auction/accept`).catch(err => alert(err.response?.data?.error || 'Error'));
   };
 
   const markUnsold = () => {
-    axios.post(`${API}/api/auction/unsold`).catch(err => alert(err.response?.data?.error || 'Error'));
+    axios.post(`${API_BASE_URL}/api/auction/unsold`).catch(err => alert(err.response?.data?.error || 'Error'));
   };
 
   const askMoreBids = () => {
-    axios.post(`${API}/api/auction/ask-more-bids`).catch(err => alert(err.response?.data?.error || 'Error'));
+    axios.post(`${API_BASE_URL}/api/auction/ask-more-bids`).catch(err => alert(err.response?.data?.error || 'Error'));
   };
 
   if (loading || !state) return <div className="auctioneer-dashboard"><div className="loading-state">Loading...</div></div>;

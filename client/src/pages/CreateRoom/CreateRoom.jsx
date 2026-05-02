@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_BASE_URL from '../../config/api';
 import './CreateRoom.scss';
-
-const API = 'http://localhost:5000';
 
 const CreateRoom = () => {
   const [name, setName] = useState('NPL Auction 2025');
@@ -14,9 +13,9 @@ const CreateRoom = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('npl_token');
-      const res = await axios.post(`${API}/api/rooms/create`, { name, is_public: true, purse_per_team: 120, timer_seconds: 30, max_teams: 4, rtm_cards: 2, team_assignment: 'CHOICE' }, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.post(`${API_BASE_URL}/api/rooms/create`, { name, is_public: true, purse_per_team: 120, timer_seconds: 30, max_teams: 4, rtm_cards: 2, team_assignment: 'CHOICE' }, { headers: { Authorization: `Bearer ${token}` } });
       // Reset auction state for fresh start
-      await axios.post(`${API}/api/auction/reset`);
+      await axios.post(`${API_BASE_URL}/api/auction/reset`);
       // Go DIRECTLY to the auctioneer dashboard
       navigate(`/room/${res.data.room.code}/auctioneer`);
     } catch (err) {

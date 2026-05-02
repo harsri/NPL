@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import API_BASE_URL from '../../config/api';
 import './TeamManager.scss';
-
-const API = 'http://localhost:5000';
 
 const TeamManager = () => {
   const { code } = useParams();
@@ -16,9 +15,9 @@ const TeamManager = () => {
   // Poll auction state every 500ms
   useEffect(() => {
     const poll = setInterval(() => {
-      axios.get(`${API}/api/auction/state`).then(res => setState(res.data)).catch(() => {});
+      axios.get(`${API_BASE_URL}/api/auction/state`).then(res => setState(res.data)).catch(() => {});
     }, 500);
-    axios.get(`${API}/api/auction/state`).then(res => setState(res.data));
+    axios.get(`${API_BASE_URL}/api/auction/state`).then(res => setState(res.data));
     return () => clearInterval(poll);
   }, []);
 
@@ -28,7 +27,7 @@ const TeamManager = () => {
   const placeBid = () => {
     setBidError(null);
     setBidSuccess(null);
-    axios.post(`${API}/api/auction/bid`, { teamId })
+    axios.post(`${API_BASE_URL}/api/auction/bid`, { teamId })
       .then(res => setBidSuccess(`Bid placed! ₹${res.data.currentBid.toFixed(2)} Cr`))
       .catch(err => setBidError(err.response?.data?.error || 'Bid failed'));
   };
